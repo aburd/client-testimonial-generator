@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% set originUrl = "http://www.servcorp.co.jp" %}
+
+{% block header %}
+<div class="client-box">
+  <h3>Client Voices</h3>
+  <div class="description">
+    <span class="type">{{ client.product }} Client</span> <span class="name">{{ client.name }}</span> <span class="company">{{ client.company }}</span> <span class="title">{{ client.title }}</span>
+  </div>
+  <div class="bottom">
+  <div class="location-name">
+    {{ client.location }}
+  </div><img alt="" class="hidden-xs object-fit_cover" data-object-fit="cover" src="{{ originUrl }}/media/26254/servcorp-logo-sml.png"></div>
+</div>
+<div class="banner-photo"><img alt="" class="img-responsive object-fit_cover" data-object-fit="cover" src="{{ originUrl }}{{ client.cover }}"></div>
+{% endblock %}
+
+
+{% block mainContent %}
+
+  {% for sections in article %}
+    <div class="row">
+
+      <div class="col-md-8">
+        {% for blockGroup in sections.interview %}
+
+          <div class="qa">
+            {% for token in blockGroup %}
+
+              {% if token.type === ">" %}
+                <div class="pull-out-text">
+                  {{ token.text }}
+                </div>
+              {% endif %}
+
+              {% if token.type === "#" %}
+                <div class="question">
+                  {{ token.text }}
+                </div>
+              {% endif %}
+
+              {% if token.type === "##" %}
+                <div class="answer">
+                  {{ token.text }}
+                </div>
+              {% endif %}
+
+              {% if token.type === "###" %}
+                <h3>
+                  {{ token.text }}
+                </h3>
+              {% endif %}
+
+          {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="col-md-4">
+        {% for href in sections.pictures %}
+        <div class="picture">
+          <img alt="" class="img-responsive" src="{{ originUrl }}{{ href }}">
+        </div>
+        {% endfor %}
+      </div>
+
+  {% if loop.first %}
+  <div class="row">
+    <div class="col-xs-12">
+      <p><hr></p>
+    </div>
+  </div>
+  {% endif %}
+
+  </div>
+  {% endfor %}
+
+{% endblock %}

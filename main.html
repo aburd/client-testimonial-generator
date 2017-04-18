@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Article Generator</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./styles/case-study.css">
+  <script src="https://mozilla.github.io/nunjucks/files/nunjucks.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
+</head>
+<body>
+  <div id="output"></div>
+
+
+
+<!-- Load Client Data  -->
+<script src="./value-creator.js"></script>
+
+<!-- Parse and render -->
+<script>
+// Parse the article data
+data.article = data.article.map(section => {
+  // section #object { interview #string, pictures #array }
+  const { interview, pictures } = section;
+  function getBlocks(interviewString) {
+    return interviewString.split(/\n\n/g);
+  }
+  function tokenize(blockString) {
+    const tokens = blockString.split(/\n/g)
+    return tokens.map(tokenString => {
+        const tokenType = tokenString.split(' ')[0] // string
+        const tokenText = tokenString.split(' ').splice(1).join(' ') // string
+        return {
+          type: tokenType,
+          text: tokenText
+        }
+      })
+  }
+  return {
+    interview: getBlocks(interview).map(tokenize),
+    pictures: pictures
+  }
+});
+
+console.log('Data: ', data);
+
+// Start templating
+nunjucks.configure('views', { autoescape: true });
+nunjucks.render('main-content.html', data, (err, res) => {
+  if(err) {
+    console.log(err);
+  }
+  var outputElement = document.getElementById('output');
+  outputElement.innerHTML = res;
+});
+</script>
+</body>
+</html>
